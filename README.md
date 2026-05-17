@@ -4,7 +4,7 @@ A CachyOS variant of the [Dark Matter GRUB Theme](https://github.com/VandalByte/
 
 The original theme supports many distros but had no CachyOS version, so I made one — custom background and CachyOS logo included.
 
-![preview](darkmatter/background.png)
+![preview](darkmatter/preview.png)
 
 ---
 
