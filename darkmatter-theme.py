@@ -5,8 +5,8 @@
 # | |) / _` | '_| / / | |\/| / _` |  _|  _/ -_) '_|
 # |___/\__,_|_| |_\_\ |_|  |_\__,_|\__|\__\___|_|   GRUB THEME
 #
-# Version: 2.0                    Written by Vandal (VandalByte)
-# CachyOS Fork                    by croaky-fx
+# Version: 2.1 (CachyOS fork)       Written by Vandal (VandalByte)
+# CachyOS Fork + bugfixes            by croaky-fx
 # GitLab (repo)   : https://gitlab.com/VandalByte/darkmatter-grub-theme 
 # Github (mirror) : https://github.com/VandalByte/darkmatter-grub2-theme
 ## Github (fork)  : https://github.com/croaky-fx/darkmatter-grub-theme-cachyos
@@ -35,11 +35,17 @@ def check_root():
 
 def check_distro():
     try:
-        lsb_id = subprocess.check_output("lsb_release -i", shell=True).decode("utf-8")
-        id = lsb_id.split(":")[-1].lower().strip()
+        with open("/etc/os-release", "r") as f:
+            for line in f:
+                if line.startswith("ID="):
+                    return line.split("=")[-1].strip().strip('"').lower()
     except Exception:
-        id = ""
-    return id
+        pass
+    try:
+        lsb_id = subprocess.check_output("lsb_release -i", shell=True).decode("utf-8")
+        return lsb_id.split(":")[-1].lower().strip()
+    except Exception:
+        return ""
 
 
 def change_grub_theme(grub_theme_path):
@@ -49,10 +55,10 @@ def change_grub_theme(grub_theme_path):
         for i, line in enumerate(data):
             if line.startswith("GRUB_TERMINAL_OUTPUT"):
                 data.pop(i)
-                data.insert(i, f"#{line}\n")
+                data.insert(i, f"#{line}")
             elif line.startswith("GRUB_TIMEOUT_STYLE"):
                 data.pop(i)
-                data.insert(i, f"#{line}\n")
+                data.insert(i, f"#{line}")
             elif line.startswith("GRUB_ENABLE_BLSCFG"):
                 data.pop(i)
                 data.insert(i, "GRUB_ENABLE_BLSCFG=false\n")
@@ -95,9 +101,9 @@ def install():
     print("\n   INSTALLER ✔️")
     THEME = "darkmatter"
 
-    # debian | arch
+    # debian | arch | cachyos
     if os.path.exists("/boot/grub/"):
-        GRUB_THEMES_DIR = "/boot/grub/themes/"
+        GRUB_THEMES_DIR = "/boot/grub/themes"
         GRUB_UPDATE_CMD = "grub-mkconfig -o /boot/grub/grub.cfg"
 
         if not os.path.exists(GRUB_THEMES_DIR):
@@ -105,7 +111,7 @@ def install():
 
     # fedora | redhat
     elif os.path.exists("/boot/grub2/"):
-        GRUB_THEMES_DIR = "/boot/grub2/themes/"
+        GRUB_THEMES_DIR = "/boot/grub2/themes"
         GRUB_UPDATE_CMD = "grub2-mkconfig -o /boot/grub2/grub.cfg"
 
         if not os.path.exists(GRUB_THEMES_DIR):
@@ -130,7 +136,7 @@ def install():
     print("    done.\n")
 
     print(f"\n{G}($){C} Editing the GRUB file ...")
-    THEME_PATH = f"{THEME_DIR}theme.txt"
+    THEME_PATH = f"{THEME_DIR}/theme.txt"
     change_grub_theme(THEME_PATH)
     print("    done.\n")
 

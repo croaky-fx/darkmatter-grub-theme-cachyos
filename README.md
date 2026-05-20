@@ -1,10 +1,17 @@
 # Dark Matter GRUB Theme — CachyOS
 
 A CachyOS variant of the [Dark Matter GRUB Theme](https://github.com/VandalByte/darkmatter-grub2-theme) by VandalByte.
-
 The original theme supports many distros but had no CachyOS version, so I made one — custom background and CachyOS logo included.
 
 ![preview](darkmatter/preview.png)
+
+---
+
+## Requirements
+
+- Python 3.x
+- `git`
+- GRUB 2 (package: `grub`)
 
 ---
 
@@ -16,36 +23,35 @@ cd darkmatter-grub-theme-cachyos
 sudo python3 darkmatter-theme.py --install
 ```
 
-Then update GRUB:
-
-```bash
-sudo grub-mkconfig -o /boot/grub/grub.cfg
-```
+> The script automatically updates GRUB after installing — no need to run `grub-mkconfig` manually.
 
 ---
 
 ## Manual Installation
 
 ```bash
-sudo cp -r darkmatter /usr/share/grub/themes/
+sudo cp -r darkmatter /boot/grub/themes/
 ```
 
 Edit `/etc/default/grub`:
 
 ```
-GRUB_THEME="/usr/share/grub/themes/darkmatter/theme.txt"
+GRUB_THEME="/boot/grub/themes/darkmatter/theme.txt"
 ```
 
-Update GRUB:
+Then update GRUB:
 
 ```bash
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-> **Note for CachyOS users:** the theme path may be `/usr/share/grub/themes/` or `/boot/grub/themes/` depending on your setup. Check which one your system uses:
+> **Note for CachyOS users:** the correct theme path is `/boot/grub/themes/`.
+> You can verify your current theme setting with:
 > ```bash
-> cat /etc/default/grub | grep GRUB_THEME
+> grep GRUB_THEME /etc/default/grub
 > ```
+
+> **Note for Fedora/RHEL users:** the script sets `GRUB_ENABLE_BLSCFG=false` in `/etc/default/grub` automatically, which is required for GRUB themes to work on BLS-based systems.
 
 ---
 
